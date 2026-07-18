@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "spatialrc"
+version = "0.2.0"
+description = "Spatially-embedded, delay-aware connectome reservoir computing with pluggable compute backends"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Rodrigo Debona" }]
+keywords = [
+    "reservoir-computing",
+    "connectome",
+    "neuroscience",
+    "echo-state-network",
+    "conduction-delays",
+    "spatial-embedding",
+    "seRNN",
+    "criticality",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.23",
+    "scipy>=1.9",
+]
+
+[project.optional-dependencies]
+pytorch = ["torch>=2.0"]
+# CuPy wheel name depends on your CUDA toolkit (e.g. cupy-cuda12x). Install the
+# matching wheel yourself; this extra pins the generic meta-package.
+cupy = ["cupy>=12.0"]
+jax = ["jax>=0.4.20", "jaxlib>=0.4.20"]
+viz = ["matplotlib>=3.6", "seaborn>=0.12", "vedo>=2024.5"]
+# Optional geodesic-distance backends for Geometry.set_geodesic(...)
+geodesic = ["potpourri3d>=1.0", "gdist>=1.0.3"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1",
+    "black>=23.0",
+    "mypy>=1.0",
+]
+all = ["spatialrc[pytorch,jax,viz,geodesic,dev]"]
+
+[project.urls]
+Homepage = "https://github.com/rdneuro/spatialrc"
+Repository = "https://github.com/rdneuro/spatialrc"
+"Bug Tracker" = "https://github.com/rdneuro/spatialrc/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/spatialrc"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/spatialrc", "tests", "examples", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::RuntimeWarning"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B"]
+ignore = [
+    "E741",  # allow short math variable names (lambda, l, i, j)
+    "B027",  # sync/empty_cache are intentional optional no-op backend hooks
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+warn_unused_ignores = false
